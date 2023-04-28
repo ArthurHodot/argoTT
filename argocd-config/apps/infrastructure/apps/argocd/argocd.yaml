@@ -1,11 +1,10 @@
----
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: argocd
   namespace: argocd
-  name: app-of-apps
   annotations:
-    argocd.argoproj.io/manifest-generate-paths: argocd-config/apps
+    argocd.argoproj.io/manifest-generate-paths: apps/argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -14,11 +13,12 @@ spec:
     namespace: argocd
     name: in-cluster
   source:
-    path: argocd-config/apps
+    path: apps/argocd
     repoURL: https://github.com/ArthurHodot/argoTT.git
-    directory:
-      recurse: true
+    targetRevision: HEAD
   syncPolicy:
     automated:
-      prune: true
       selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
